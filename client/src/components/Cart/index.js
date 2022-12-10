@@ -32,7 +32,7 @@ const Cart = () => {
         res.redirectToCheckout({ sessionId: data.checkout.session });
       });
     }
-  }, [data]);
+  }, [data, stripePromise]);
 
   function toggleCart() {
     dispatch({ type: TOGGLE_CART });

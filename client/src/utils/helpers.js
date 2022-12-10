@@ -2,13 +2,15 @@ export function pluralize(name, count) {
   if (count === 1) {
     return name;
   }
-  return name + "s";
+  return `${name} s`;
 }
 
 export function idbPromise(storeName, method, object) {
   return new Promise((resolve, reject) => {
     const request = window.indexedDB.open("shop-shop", 1);
-    let db, tx, store;
+    let db;
+    let tx;
+    let store;
     request.onupgradeneeded = function (e) {
       const db = request.result;
       db.createObjectStore("products", { keyPath: "_id" });
