@@ -1,76 +1,72 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { idbPromise } from "../../utils/helpers";
+
+// import { useStoreContext } from '../../utils/GlobalState';
+// import { UPDATE_PRODUCTS } from "../../utils/actions";
+
+import { UPDATE_PRODUCTS } from "../../utils/redux/slices/storeSlice";
+import { useSelector, useDispatch } from "react-redux";
+
 import ProductItem from "../ProductItem";
-import { useStoreContext } from "../../utils/GlobalState";
-import { UPDATE_PRODUCTS } from "../../utils/actions";
 import { QUERY_PRODUCTS } from "../../utils/queries";
 import spinner from "../../assets/spinner.gif";
 
+import { idbPromise } from "../../utils/helpers";
+
 function ProductList() {
-  const [state, dispatch] = useStoreContext();
+	const state = useSelector((state) => state.storeReducer);
+	const dispatch = useDispatch();
+	// console.log(state);
+	// const [state, dispatch] = useStoreContext();
+	const { currentCategory } = state;
+	// console.log(currentCategory);
+	const { loading, data } = useQuery(QUERY_PRODUCTS);
 
-  const { currentCategory } = state;
+	useEffect(() => {
+		if (data) {
+			dispatch(UPDATE_PRODUCTS(data.products));
+			data.products.forEach((product) => {
+				idbPromise("products", "put", product);
+			});
+		} else if (!loading) {
+			idbPromise("products", "get").then((products) => {
+				dispatch(UPDATE_PRODUCTS(products));
+			});
+		}
+	}, [data, loading, dispatch]);
 
-  const { loading, data } = useQuery(QUERY_PRODUCTS);
+	function filterProducts() {
+		if (!currentCategory) {
+			return data.products;
+		}
 
-  useEffect(() => {
-    // if there's data to be stored
-    if (data) {
-      // let's store it in the global state object
-      dispatch({
-        type: UPDATE_PRODUCTS,
-        products: data.products,
-      });
-      // but let's also take each product and save it to IndexedDB using the helper function
-      data.products.forEach((product) => {
-        idbPromise("products", "put", product);
-      });
-      // add else if to check if `loading` is undefined in `useQuery()` Hook
-    } else if (!loading) {
-      // since we are offline, get all of the data form the `products` store
-      idbPromise("products", "get").then((products) => {
-        // use retrieved data to set global state for offline browsing
-        dispatch({
-          type: UPDATE_PRODUCTS,
-          products: products,
-        });
-      });
-    }
-  }, [data, loading, dispatch]);
+		return state.products.filter(
+			(product) => product.category._id === currentCategory,
+		);
+	}
 
-  function filterProducts() {
-    if (!currentCategory) {
-      return state.products;
-    }
-
-    return state.products.filter(
-      (product) => product.category._id === currentCategory
-    );
-  }
-
-  return (
-    <div className="my-2">
-      <h2>Our Products:</h2>
-      {state.products.length ? (
-        <div className="flex-row">
-          {filterProducts().map((product) => (
-            <ProductItem
-              key={product._id}
-              _id={product._id}
-              image={product.image}
-              name={product.name}
-              price={product.price}
-              quantity={product.quantity}
-            />
-          ))}
-        </div>
-      ) : (
-        <h3>You haven't added any products yet!</h3>
-      )}
-      {loading ? <img src={spinner} alt="loading" /> : null}
-    </div>
-  );
+	return (
+		<div className="my-2">
+			<h2>Our Products:</h2>
+			{state.products.length ? (
+				<div className="flex-row">
+					{filterProducts().map((product) => (
+						<ProductItem
+							key={product._id}
+							_id={product._id}
+							image={product.image}
+							name={product.name}
+							price={product.price}
+							quantity={product.quantity}
+						/>
+					))}
+				</div>
+			) : (
+				<h3>You haven't added any products yet!</h3>
+			)}
+			{loading ? <img src={spinner} alt="loading" /> : null}
+		</div>
+	);
 }
 
 export default ProductList;

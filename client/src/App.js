@@ -6,7 +6,9 @@ import {
 	ApolloProvider,
 	createHttpLink,
 } from "@apollo/client";
-import { StoreProvider } from "./utils/GlobalState";
+// import { StoreProvider } from "./utils/GlobalState";
+// import { Provider } from "react-redux";
+// import store from "./utils/redux/store";
 import { setContext } from "@apollo/client/link/context";
 
 import Home from "./pages/Home";
@@ -42,18 +44,18 @@ function App() {
 		<ApolloProvider client={client}>
 			<Router>
 				<div>
-					<StoreProvider>
-						<Nav />
-						<Routes>
-							<Route path="/" element={<Home />} />
-							<Route path="/login" element={<Login />} />
-							<Route path="/signup" element={<Signup />} />
-							<Route path="/orderHistory" element={<OrderHistory />} />
-							<Route path="/products/:id" element={<Detail />} />
-							<Route path="/success" element={<Success />} />
-							<Route path="*" element={<NoMatch />} />
-						</Routes>
-					</StoreProvider>
+					{/* <Provider store={store}> */}
+					<Nav />
+					<Routes>
+						<Route path="/" element={<Home />} />
+						<Route path="/login" element={<Login />} />
+						<Route path="/signup" element={<Signup />} />
+						<Route path="/orderHistory" element={<OrderHistory />} />
+						<Route path="/products/:id" element={<Detail />} />
+						<Route path="/success" element={<Success />} />
+						<Route path="*" element={<NoMatch />} />
+					</Routes>
+					{/* </Provider> */}
 				</div>
 			</Router>
 		</ApolloProvider>
