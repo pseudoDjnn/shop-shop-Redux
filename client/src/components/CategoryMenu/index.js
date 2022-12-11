@@ -19,7 +19,7 @@ function CategoryMenu() {
 	const state = useSelector((state) => state.storeReducer);
 	const dispatch = useDispatch();
 
-	const { categories } = state;
+	const { categories } = state || {};
 
 	const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
 
@@ -43,7 +43,7 @@ function CategoryMenu() {
 	return (
 		<div>
 			<h2>Choose a Category:</h2>
-			{categories.map((item) => (
+			{categories?.map((item) => (
 				<button
 					key={item._id}
 					onClick={() => {

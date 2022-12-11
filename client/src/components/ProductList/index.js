@@ -18,7 +18,7 @@ function ProductList() {
 	const dispatch = useDispatch();
 	// console.log(state);
 	// const [state, dispatch] = useStoreContext();
-	const { currentCategory } = state;
+	const { currentCategory } = state || {};
 	// console.log(currentCategory);
 	const { loading, data } = useQuery(QUERY_PRODUCTS);
 
@@ -48,7 +48,7 @@ function ProductList() {
 	return (
 		<div className="my-2">
 			<h2>Our Products:</h2>
-			{state.products.length ? (
+			{state?.products.length ? (
 				<div className="flex-row">
 					{filterProducts().map((product) => (
 						<ProductItem
