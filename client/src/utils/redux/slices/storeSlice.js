@@ -15,25 +15,25 @@ const initialState = {
 export const storeSlice = createSlice({
 	name: "StoreState",
 	initialState,
-	reducers: {
+	reducer: {
 		UPDATE_PRODUCTS: (state, action) => {
 			return {
 				...state,
-				products: [...action.payload],
+				product: [...action.products],
 			};
 		},
 
 		UPDATE_CATEGORIES: (state, action) => {
 			return {
 				...state,
-				categories: [...action.payload],
+				categories: [...action.categories],
 			};
 		},
 
 		UPDATE_CURRENT_CATEGORY: (state, action) => {
 			return {
 				...state,
-				currentCategory: action.payload,
+				currentCategory: action.currentCategory,
 			};
 		},
 
@@ -41,7 +41,7 @@ export const storeSlice = createSlice({
 			return {
 				...state,
 				cartOpen: true,
-				cart: [...state.cart, action.payload],
+				cart: [...state.cart, action.product],
 			};
 		},
 

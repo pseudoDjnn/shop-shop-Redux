@@ -16,7 +16,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useLazyQuery } from "@apollo/client";
 const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
 
-const Cart = () => {
+const Cart = ({ setCategory }) => {
 	const state = useSelector((state) => state.storeReducer);
 	const dispatch = useDispatch();
 	const [getCheckout, { data }] = useLazyQuery(QUERY_CHECKOUT);
@@ -30,7 +30,7 @@ const Cart = () => {
 		if (!state.cart.length) {
 			getCart();
 		}
-	}, [state?.cart.length, dispatch]);
+	}, [state.cart.length, dispatch]);
 
 	useEffect(() => {
 		if (data) {
@@ -66,7 +66,7 @@ const Cart = () => {
 		});
 	}
 
-	if (state?.cartOpen) {
+	if (state.cartOpen) {
 		return (
 			<div className="cart-closed" onClick={toggleCart}>
 				<span role="img" arial-label="trash">
